@@ -10,7 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+        
       - uses: chrnorm/deployment-action@releases/v1
         name: Create GitHub deployment
         id: deployment
@@ -18,6 +22,7 @@ jobs:
           token: "${{ secrets.GH_PACKAGES_TOKEN }}"
           target_url: https://demogithubday.azurewebsites.net/
           environment: desenvolvimento
+          ref: ${{ steps.extract_branch.outputs.branch }}
         
       - uses: azure/webapps-deploy@v2
         with:
@@ -33,6 +38,7 @@ jobs:
           target_url: https://demogithubday.azurewebsites.net/
           state: "success"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          ref: ${{ steps.extract_branch.outputs.branch }}
           
       - name: Update deployment status (failure)
         if: failure()
@@ -42,3 +48,4 @@ jobs:
           target_url: https://demogithubday.azurewebsites.net/
           state: "failure"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          ref: ${{ steps.extract_branch.outputs.branch }}
