@@ -1,0 +1,18 @@
+name: Deploy da aplicação
+
+on: 
+  issues:
+   types: [labeled]
+
+jobs:
+  deploy:
+    if: contains( github.event.label.name, 'deploy dev')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'demogithubday'
+          publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+          images: 'ghcr.io/julioarruda/demogithubday:latest'
+
