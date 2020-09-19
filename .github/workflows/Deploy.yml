@@ -10,9 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - uses: chrnorm/deployment-action@releases/v1
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: "${{ secrets.GH_PACKAGES_TOKEN }}"
+          target_url: https://demogithubday.azurewebsites.net/
+          environment: desenvolvimento
+        
       - uses: azure/webapps-deploy@v2
         with:
           app-name: 'demogithubday'
           publish-profile: ${{ secrets.azureWebAppPublishProfile }}
           images: 'ghcr.io/julioarruda/demogithubday:latest'
-
+          
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: "${{ secrets.GH_PACKAGES_TOKEN }}"
+          target_url: https://demogithubday.azurewebsites.net/
+          state: "success"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: "${{ secrets.GH_PACKAGES_TOKEN }}"
+          target_url: https://demogithubday.azurewebsites.net/
+          state: "failure"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
