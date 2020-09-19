@@ -20,7 +20,7 @@ jobs:
         with:
           login-server: ghcr.io
           username: ${{ secrets.GH_PACKAGES_USER }}
-          password: ${{ secrets.GH_PACKAGES_TOKEN }}
+          password: ''
 
       - name: Build the Docker image
         run: |
