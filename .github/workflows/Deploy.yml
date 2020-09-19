@@ -15,14 +15,15 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
         
-      - uses: chrnorm/deployment-action@releases/v1
+      - uses: altinukshini/deployment-action@releases/v1
         name: Create GitHub deployment
         id: deployment
         with:
           token: "${{ secrets.GH_PACKAGES_TOKEN }}"
-          target_url: https://demogithubday.azurewebsites.net/
-          environment: desenvolvimento
-          ref: ${{ steps.extract_branch.outputs.branch }}
+          target_url: http://my-app-url.com
+          environment: production
+          pr: true
+          pr_id	: ${GITHUB_EVENT_PATH}
         
       - uses: azure/webapps-deploy@v2
         with:
@@ -32,20 +33,22 @@ jobs:
           
       - name: Update deployment status (success)
         if: success()
-        uses: chrnorm/deployment-status@releases/v1
+        uses: altinukshini/deployment-status@releases/v1
         with:
           token: "${{ secrets.GH_PACKAGES_TOKEN }}"
-          target_url: https://demogithubday.azurewebsites.net/
+          target_url: http://my-app-url.com
           state: "success"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          ref: ${{ steps.extract_branch.outputs.branch }}
-          
+          pr: true
+          pr_id	: ${GITHUB_EVENT_PATH}
+
       - name: Update deployment status (failure)
         if: failure()
-        uses: chrnorm/deployment-status@releases/v1
+        uses: altinukshini/deployment-status@releases/v1
         with:
           token: "${{ secrets.GH_PACKAGES_TOKEN }}"
-          target_url: https://demogithubday.azurewebsites.net/
+          target_url: http://my-app-url.com
           state: "failure"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
-          ref: ${{ steps.extract_branch.outputs.branch }}
+          pr: true
+          pr_id	: ${GITHUB_EVENT_PATH}
