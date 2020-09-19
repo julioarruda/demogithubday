@@ -21,7 +21,7 @@ jobs:
         
       - uses: azure/webapps-deploy@v2
         with:
-          app-name: 'demogithubdayoi'
+          app-name: 'demogithubday'
           publish-profile: ${{ secrets.azureWebAppPublishProfile }}
           images: 'ghcr.io/julioarruda/demogithubday:latest'
           
