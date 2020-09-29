@@ -23,8 +23,12 @@ jobs:
         with:
           files: 'appsettings.json'
         env:
-          Logging.LogLevel.Default: "value2"
-
+          Logging.LogLevel.Default: "logDefault"
+          Logging.LogLevel.Microsoft: "logMicrosoft"
+          Logging.LogLevel.Microsoft.Hosting.Lifetime: "logMicrosoftLifetime"
+          AllowedHosts: "all"
+          
+          
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
