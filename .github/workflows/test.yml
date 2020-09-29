@@ -24,4 +24,9 @@ jobs:
           files: 'appsettings.json'
         env:
           Logging.LogLevel.Default: "value2"
-          
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifact
+          path: appsettings.json
