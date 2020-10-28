@@ -2,11 +2,6 @@ name: Build Docker
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 
 jobs:
 
@@ -26,6 +21,10 @@ jobs:
         run: |
          docker build . --file Dockerfile --tag ghcr.io/julioarruda/demogithubday:${{ github.sha }}
          docker tag ghcr.io/julioarruda/demogithubday:${{ github.sha }} ghcr.io/julioarruda/demogithubday:latest
+
+      - uses: azure/container-scan@v0
+        with:
+          image-name: ghcr.io/julioarruda/demogithubday:${{ github.sha }}
 
       - name: Docker Push
         run: |
