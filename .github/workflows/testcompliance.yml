@@ -1,0 +1,22 @@
+name: Compliance
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}} 
+
+      - name: Check for resource compliance
+        uses: azure/policy-compliance-scan@v0
+        with:
+          scopes: |
+            /subscriptions/fbef5108-6185-4658-9f2b-7a5f7d58b456
